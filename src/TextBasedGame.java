@@ -1,266 +1,279 @@
 import java.util.Scanner;
-import java.util.Random;
+import java.util.concurrent.*;
+
+/*
+    Author: Alexis Chiu
+    Date: Finished on 05-10-2023
+    This is Lab 3.1 Adventure Time. In this game, the user will play an escape room in an attempt to escape.
+
+ */
+
 public class TextBasedGame {
-    public static Scanner scanner = new Scanner(System.in);
-    public static Random random = new Random();
-    public static String[] items = {"Grass", "Real Knife", "Yoshi Plushie", "Gold Locket"};
+    public static Scanner scanner = new Scanner (System.in);
+    public static int roomOneAnswer;
+    public static String username = scanner.nextLine();
 
-    public static void main(String[] args) {
-        //Ask for user's username
-        System.out.print("What is your name?");
-        String username = scanner.nextLine();
-        System.out.println("So it's " + username + "? Hmm... Interesting.\nPress [Enter] to proceed.\n");
-        scanner.nextLine();
-        //Story Background
-        storyBackground(username);
-        //The Game
-        doorsGame(username);
-        scanner.close();
+    public static void main(String[] args){
+        System.out.println("Welcome to the ESCAPE ROOM!" );
+        System.out.println("Please enter a name to continue: ");
+        username = scanner.nextLine();
+        creatingProfile(username);
+        clearScreen();
+        rulesOfGame(username);
+        roomOneMathQuestion();
+        determineRoom2();
     }
 
-    //storyBackground
-    public static void storyBackground(String username) {
-        System.out.println("...Wake up " + username + ". You're late for class!");
+    //Creating the user's profile for the game
+    public static void creatingProfile(String username){
+        System.out.println("I see " + username + ". Why don't I give you a chance to make a profile, just in case you don't make it out alive...");
+        System.out.println("Please enter your age: ");
+        int age = scanner.nextInt();
         scanner.nextLine();
-        System.out.println("But don't panic. One of the doors will eventually lead to your classroom.");
-        scanner.nextLine();
-        System.out.println("There may be surprises behind each door. But be careful, not all are pleasing to encounter!");
-        scanner.nextLine();
-        System.out.println("It's a game of chance, and don't be late to class! Good luck! :)");
-        scanner.nextLine();
-        System.out.print("Press [Enter] to proceed.");
-        scanner.nextLine();
+        System.out.println("Now enter your preferred nickname/username: ");
+        String nickname = scanner.nextLine();
+        System.out.println("What about your favourite food? ");
+        String faveFood = scanner.nextLine();
+        System.out.println("And maybe your favourite color?: ");
+        String faveColour = scanner.nextLine();
+        System.out.println("\nWell This is your profile, why don't you tell me how it looks?\nName:" + username + "\nPreferred Nickname:" + nickname + "\nAge:" + age + "\nFavourite Food: " + faveFood + "\nFavourite Color: " + faveColour);
+        System.out.println("How does that look?...\nPress [1] to confirm your choices, press [2] to redo the profile.");
+        int profileConfirmation = scanner.nextInt();
+        while(profileConfirmation == 2){
+            System.out.println("Alright " + username + ".");
+            System.out.println("Please enter your age: ");
+            age = scanner.nextInt();
+            scanner.nextLine();
+            System.out.println("Now enter your preferred nickname/username: ");
+            nickname = scanner.nextLine();
+            System.out.println("What about your favourite food? ");
+            faveFood = scanner.nextLine();
+            System.out.println("And maybe your favourite color?: ");
+            faveColour = scanner.nextLine();
+            System.out.println("\nWell This is your profile, why don't you tell me how it looks?\nName:" + username + "\nPreferred Nickname:" + nickname + "\nAge:" + age + "\nFavourite Food: " + faveFood + "\nFavourite Color: " + faveColour);
+            System.out.println("How does that look?...\nPress [1] to confirm your choices, press [2] to redo the profile.");
+            profileConfirmation = scanner.nextInt();
+        }
     }
 
-    public static void doorsGame(String username) {
-        //Starting variables
-        int doorsOpened = 0;
-        boolean hasGoldLocket = false;
-        boolean hasRealKnife = false;
-        //Main game
-        String item = randomItem();
-        System.out.println("\nYou scanned the room and found: " + item + ".");
-        System.out.print("Enter '1' to use the item, or press [Enter] to dispose the item and proceed: ");
-        String useItem = scanner.nextLine();
-        if (useItem.equals("1")) {
-            if (item.equals("Grass")) {
-                System.out.println("\nYou touched grass, and died instantly! Oh well, better luck next time :')");
-                System.out.println("GAME OVER. Don't give up just yet!");
-                return;
-            }
-            else if (item.equals("Real Knife")){
-                System.out.println("\nYou used the Real Knife. Hopefully you won't encounter any Killers on your way to class.");
-                hasRealKnife = true;
-            }
-            else if (item.equals("Yoshi Plushie")) {
-                System.out.println("\nYou used the Yoshi Plushie and teleported directly to class on time! Don't oversleep next time :)");
-                System.out.println("The End! You did it!");
-                return;
+    //These are the rules of this game
+    public static void rulesOfGame(String username){
+        System.out.println("Now " + username + ", you have started the escape room. Lets review some instructions of the game");
+        System.out.println("In each room you enter, there is a question. You will get a certain amount of time to answer the question. Each question leads you to a different room. Theres only one correct route, others will eventually lead you to death.");
+        System.out.println("The instructions are simple, solve the answer and input your answer.");
+        System.out.println("Are you ready to being your journey? Press [1] to confirm your fate.");
+        scanner.nextInt();
+
+    }
+
+    //First room --> math question
+    public static void roomOneMathQuestion(){
+        System.out.println("Welcome to room 1... Your fate relies on the choice you make here...");
+        System.out.println("A shop sells bicycles and tricycles. In total there are 7 cycles (cycles include both bicycles and tricycles) and 19 wheels. Determine how many of each there are, if a bicycle has two wheels and a tricycle has three wheels.");
+        System.out.println("""
+                Answers:
+                Room 1: 3 bicycles and 5 tricycles
+                Room 2: 5 bicycles and 2 tricycles
+                Room 3: 2 bicycles and 5 tricycles
+                Room 4: 5 bicycles and 3 tricycles
+                Enter your answer:\s""");
+        roomOneAnswer = scanner.nextInt();
+        System.out.println("Your current answer is: " + roomOneAnswer + ". Are you sure? If yes, press [1] if no, press [2]");
+        int room1AnswerConformation = scanner.nextInt();
+        while(room1AnswerConformation == 2) {
+            System.out.println("What is your new answer?");
+            roomOneAnswer = scanner.nextInt();
+            System.out.println("Your new answer is: " + roomOneAnswer + "Is this Alright. Press [1] for yes and [2] for no");
+            room1AnswerConformation = scanner.nextInt();
+        }
+    }
+
+    //Based on the answer that the user chose for Room 1, this will determine the next room
+    public static void determineRoom2(){
+        if (roomOneAnswer == 1){
+            if(roomTwoFirstChoice() == true){
+                roomThreeChoiceOne();
             }
             else {
-                System.out.println("\nYou used the Gold Locket! Hopefully nothing will happen to you in the next room!");
-                hasGoldLocket = true;
+                System.out.println("Oh no.... You've entered Room 3 and theres shadow in the corner? Oh wait, its just Grace!");
+                System.out.println("But...\n She's holding a knife in her hands...");
+                System.out.println("Rest in Pieces.");
+                System.exit(1);
             }
         }
-        System.out.print("\n...A door lies before you. "+username+", please press [Enter] to proceed.");
-        scanner.nextLine();
-        String event = randomEvent();
-        System.out.println("\nEvent: "+event);
-            if ((event.equals("Drowning") || event.equals("Suffocation")) && !hasGoldLocket) {
-                System.out.println("\nIt's hard to breathe, isn't it?");
-                scanner.nextLine();
-                System.out.println("Well, it looks like you're never gonna get to class! Farewell, " + username);
-                scanner.nextLine();
-                System.out.println("GAME OVER. Don't give up just yet!");
-                return;
-            }
-            else if (event.equals("Burning") && !hasGoldLocket) {
-                System.out.println("\nIt's getting a bit hot, isn't it?");
-                scanner.nextLine();
-                System.out.println("...You ask why?");
-                scanner.nextLine();
-                System.out.println("That's because you're on fire!");
-                scanner.nextLine();
-                System.out.println("You can't go to class if you're reduced to ashes. Farewell, " + username);
-                scanner.nextLine();
-                System.out.println("GAME OVER. Don't give up just yet!");
-                return;
-            }
-            else if (event.equals("Alexis the Killer")) {
-                if(hasRealKnife||hasGoldLocket){
-                   fightAlexis(username, hasGoldLocket);
-                   return;
-                }
-                else{
-                    noRealKnife(username);
-                    return;
-                }
-            }
-            else if(event.equals("Nothing") && !hasGoldLocket){
-                System.out.println("\nNothing happened.");
-            }
-            else{
-            System.out.println("\nThe Golden Locket cracked. Seems like it can't be used anymore.");
-            }
-            doorsOpened++;
-            if (doorsOpened == 1) {
-                System.out.println("\nCongratulations! You successfully went to class on time!");
-                System.out.println("The End! You did it!");
-            }
-    }
-    public static void fightAlexis(String username, Boolean hasGoldLocket){
-        //Player and Alexis stats
-        int[] userHP={50};
-        int[] enemyHP= new int[]{randomHP()};
+        if(roomOneAnswer == 2)
+        {
+            roomTwoSecondChoice();
+        }
+        if(roomOneAnswer ==3){ //correct answer to previous question
+            roomTwoThirdChoice();
+        }
+        if(roomOneAnswer == 4){
+            roomTwoFourthChoice();
 
-        //Dialogue
-        System.out.println("\nUh oh, that looks like Alexis the Killer!");
-        scanner.nextLine();
-        System.out.println(username+", it looks like you're in a battle! Good luck.");
-        scanner.nextLine();
-
-        //Fight
-        boolean battleStatus=true;
-        while(true){
-            System.out.println("\n"+username+"'s HP: "+userHP[0]);
-            System.out.println("Alexis's HP: "+enemyHP[0]);
-            System.out.println("\nIt's your turn first!");
-            System.out.println("1. Attack");
-            System.out.println("2. Defend");
-            System.out.println("3. Run");
-            System.out.println("4. Drink a Potion");
-            System.out.print("Enter your choice: ");
-
-            //Read user input
-            int choice = scanner.nextInt();
-            scanner.nextLine();
-
-            if (userHP[0] <= 0) {
-                System.out.println("\n"+username + " has been defeated by Alexis the Killer.");
-                scanner.nextLine();
-                System.out.println("GAME OVER. Don't give up just yet!");
-                return;
-            }
-            else if
-            (enemyHP[0] <= 0) {
-                System.out.println("\n...It seems that you've finally defeated Alexis.");
-                scanner.nextLine();
-                System.out.println("It's been a long day, hasn't it?");
-                scanner.nextLine();
-                System.out.println("Why don't you just take a break for today? I'm sure your teacher wouldn't mind.");
-                scanner.nextLine();
-                System.out.println("Congratulations! "+username+" has reached the True Ending.");
-                scanner.nextLine();
-                System.out.println("...and this is indeed, The End :)");
-                scanner.nextLine();
-                return;
-            }
-            if(choice==1){
-                playerAttack(username, enemyHP, userHP);
-            }
-            else if(choice==2){
-                playerDefend(username, userHP);
-            }
-            else if(choice==3){
-                playerRun(username, hasGoldLocket, battleStatus);
-                return;
-            }
-            else{
-                playerDrinkPotion(username);
-            }
         }
     }
-    public static void playerAttack(String username, int[] enemyHP, int[] userHP){
-        //Player's Attack
-        int playerDamage = random.nextInt(10) + 1;
-        enemyHP[0] -= playerDamage;
-        System.out.println("\n"+username+" attacks Alexis and deals " +playerDamage+ " damage.");
-        System.out.println("Alexis now has "+enemyHP[0]+" left.");
-
-        //Enemy's Attack
-        if (enemyHP[0] > 0) {
-            int enemyDamage = random.nextInt(5) + 1;
-            userHP[0] -= enemyDamage;
-            System.out.println("Alexis attacks " + username + " and deals " + enemyDamage + " damage.");
-            System.out.println("You now have "+userHP[0]+" left.");
+     //If the user chose 1 as the answer, this will be the second room
+    public static boolean roomTwoFirstChoice(){
+        System.out.println("Welcome to Room 2. I guess you've survived the first room...");
+        System.out.println("Now now, why don't you give me two factors of 20");
+        System.out.println("First Number: ");
+        int room2Result1 = scanner.nextInt();
+        System.out.println("Second Number: ");
+        int room2Result2 = scanner.nextInt();
+        int room2Result = room2Result1 * room2Result2;
+        if(room2Result == 20){
+            return true;
         }
-    }
-    public static void playerDefend(String username, int[] userHP){
-        //Player's Defense
-        int playerDefense = random.nextInt(5) + 1;
-        //Enemy's Attack
-        int enemyDamage = random.nextInt(5) + 1 - playerDefense;
-        if (enemyDamage<0) {
-            enemyDamage=0;
-        }
-        userHP[0] -= enemyDamage;
-        //Dialogue
-        System.out.println("\n"+username+" defends and reduces Alexis's damage by " +playerDefense);
-        System.out.println("Alexis attacks " + username + " and deals " + enemyDamage + " damage.");
-        System.out.println("You now have "+userHP[0]+" left.");
-    }
-    public static boolean playerRun(String username, Boolean hasGoldLocket, Boolean battleStatus){
-        //Player's Escape
-        if (hasGoldLocket) {
-            System.out.println("\n"+username+" distracts Alexis with the Gold Locket, and runs from the battle.");
-            scanner.nextLine();
-            System.out.println("\nCongratulations! You successfully went to class on time!");
-            System.out.println("The End! You did it!");
-            return !battleStatus;
-        }
-        else{
-            System.out.println("\n"+username+" runs from the battle.");
-            scanner.nextLine();
-            System.out.println("Did you seriously think you could run?");
-            scanner.nextLine();
-            System.out.println("...");
-            scanner.nextLine();
-            System.out.println("GAME OVER. Don't give up just yet!");
+        else {
             return false;
         }
     }
-    public static void playerDrinkPotion(String username){
-        //Potion Variables
-        int potionEffect = random.nextInt(2);
-        int luck = random.nextInt(10) + 1;
-        int modifiedLuck;
-        String potionEffectMessage;
 
-        //Potion Effects
-        if (potionEffect == 0) {
-            modifiedLuck = luck * 2;
-            potionEffectMessage = "luckier";
-        } else {
-            modifiedLuck = luck % 2;
-            potionEffectMessage = "doomed";
+    //If the user chose 2 as the answer, this will be the second room
+    public static void roomTwoSecondChoice(){
+        System.out.println("Welcome to Room 2. I guess you've survived the first room... There are now four doors in front of you. Choose wisely, only one will make it.");
+        System.out.println("Solve this riddle: All about, but cannot be seen. Can be captured, cannot be held. No throat, but can be heard. Who am I?....");
+        System.out.println("The four rooms are:\n1. Fire\n2. Water\n3.Wind\n4.Air\nTake Your Pick: ");
+        int roomTwoTwoResults = scanner.nextInt();
+        if (roomTwoTwoResults == 1){
+            System.out.println("You walk into the next room, everything seems fine...");
+            System.out.println("Theres something shiny on the floor, it seems like its just oil, you'll be fine!");
+            System.out.println("Will you?...");
+            try{
+                Thread.sleep(1000);
+            } catch(InterruptedException ex){
+                Thread.currentThread().interrupt();
+            }
+            System.out.println("The light fell down and the oil caught on fire! The whole room is burning");
+            System.exit(1);
+        }
+        if(roomTwoTwoResults == 2){
+            System.out.println("Oh, whats that there?...");
+            try{
+                Thread.sleep(1000);
+            } catch(InterruptedException ex){
+                Thread.currentThread().interrupt();
+            }
+            System.out.println("Oh no!! A flood is coming at you, you're going to drown!");
+            System.out.println("I guess you drowned...");
+            System.exit(1);
+        }
+        if (roomTwoTwoResults == 3) {
+            roomThreeMathQuestionOne(username);
+
+        }
+        if(roomTwoTwoResults == 4){
+            System.out.println("Are you kidding me... Air can't even be heard...I'm disappointed...so I'm personally sending in Grace the murderer");
+            System.out.println("Rest in Pieces.");
+            System.exit(1);
+        }
+    }
+
+    //If the user chose 3 (which is the correct answer), this will be the second room
+    public static boolean roomTwoThirdChoice(){
+        System.out.println("Welcome to Room 2. I guess you've survived the first room... Theres a door in front of you... theres also a piece of paper on the floor");
+        System.out.println("You pick up the paper, it says \"R B E A D S\"");
+        System.out.println("Unscramble the word to get into the next room. However, theres a ticking bomb... hurry up!");
+        System.out.println("Enter your answer: ");
+        try{
+            String roomTwoUnscrambleAnswer = CompletableFuture.supplyAsync(scanner::nextLine)
+                .get(60L, TimeUnit.SECONDS);
+            System.out.println("Your answer is: " + roomTwoUnscrambleAnswer);
+            if (roomTwoUnscrambleAnswer.equalsIgnoreCase("Breads")) {
+                return true;
+            }
+        } catch (ExecutionException | InterruptedException ex) {
+            ex.printStackTrace();
+        } catch (TimeoutException e) {
+            System.out.println("It seems that your time has ran out, goodbye.");}
+        return false;
+    }
+
+    //If the user chose 4 as the answer, this will be room 2
+    public static void roomTwoFourthChoice(){
+        ThreadLocalRandom.current().nextInt();
+        int number;
+        System.out.println("Oh, theres a green door?... Is that the exit?!");
+        number = ThreadLocalRandom.current().nextInt(0, 20);
+        System.out.println("You walk closer to the door, theres a number " + number + " on it");
+        System.out.println("Your task is to enter a number which has " + number + " as a factor");
+        System.out.println("What is your answer: ");
+        int roomOneFourthChoice = scanner.nextInt();
+        if(roomOneFourthChoice%number == 0){
+            roomThreeChoiceTwo();
+        }
+        else{
+            System.out.println("Moral of the story: You should've checked your answer before you submitted it. Bye.");
+            System.exit(1);
         }
 
-        System.out.println("\n"+username + " drinks a potion. You feel " + potionEffectMessage + ".");
-        System.out.println("Your luck is now "+modifiedLuck);
     }
-    public static void noRealKnife(String username){
-        System.out.println("\nWho's that?");
-        scanner.nextLine();
-        System.out.println("Oh no! It's Alexis the killer!");
-        scanner.nextLine();
-        System.out.println("But it's too late to run, isn't it?");
-        scanner.nextLine();
-        System.out.println("You can't go to class if you're dead! Farewell, " + username);
-        scanner.nextLine();
-        System.out.println("GAME OVER");
+
+    //If the user went into the first Room2 option, this will be the third room
+    public static void roomThreeChoiceOne(){
+        System.out.println("Congrats, you made it to room three. Its outdoors, thats weird... \nHmm... theres a grey horse standing there??");
+        System.out.println("Theres a piece of paper on its saddle, it says \"This is Banjo, you must get onto him and ride to the pitstop on the other side of the field.\"");
+        System.out.println("So you get on and ride...");
+        try{
+            Thread.sleep(2000);
+        } catch(InterruptedException ex){
+            Thread.currentThread().interrupt();
+        }
+        System.out.println("But is there even a pitstop....?");
+        System.out.println("Oh look, theres a flag over there, it must be the pitstop!");
+        System.out.println("OOPS! Banjo got scared of the flag and decked you off! Oh well, I guess you can't really get there now... I'll call an ambulance for you I guess...");
+        System.exit(1);
     }
-    public static int randomHP(){
-        int minHP=25;
-        int maxHP=70;
-        return random.nextInt(maxHP - minHP + 1) + minHP;
+
+    //If the user went into the second Room2 and picked 3 (the correct answer) this will be room 3
+    public static void roomThreeMathQuestionOne(String username){
+        System.out.println("Well well... welcome to Room 3, I'm surprised you made it this far...");
+        System.out.println("Theres a door, its green, it looks like the exit...but theres a code you need to solve on the door...");
+        int number = ThreadLocalRandom.current().nextInt(0, 20);
+        int number2 = ThreadLocalRandom.current().nextInt(0, 20);
+        int number3 = ThreadLocalRandom.current().nextInt(0, 20);
+        System.out.println("It says to solve: (" + number + " + " + number2 + ") /" + number3 + ".");
+        try{
+            double roomThreeMathQuestionAnswer = CompletableFuture.supplyAsync(scanner::nextDouble)
+                    .get(120L, TimeUnit.SECONDS);
+            System.out.println("You have 2 minutes to provide an answer: ");
+            if (roomThreeMathQuestionAnswer == (number + number2)/number3) {
+                System.out.println("Congratulations" + username + ", you made it out of the escape room!");
+                System.exit(0);
+            }
+        } catch (ExecutionException | InterruptedException ex) {
+            ex.printStackTrace();
+        } catch (TimeoutException e) {
+            System.out.println("It seems that your time has ran out, goodbye.");}
     }
-    public static String randomEvent(){
-        String[] events = {"Drowning", "Burning", "Nothing", "Suffocation", "Alexis the Killer"};
-        int index = random.nextInt(events.length);
-        return events[index];
+
+    //If the user went into the fourth room2 and answered the question correctly, this will be the third room
+    public static void roomThreeChoiceTwo(){
+        System.out.println("Well well... you;ve made it to Room 3, I'm surprised you made it this far...");
+        int number = ThreadLocalRandom.current().nextInt(0, 20);
+        int number2 = ThreadLocalRandom.current().nextInt(0, 20);
+        System.out.println("Now... You need to give me a number that is less than " + number + " but also more than " + number2);
+        try{
+            int roomThreeChoiceTwoAnswer = CompletableFuture.supplyAsync(scanner::nextInt)
+                    .get(120L, TimeUnit.SECONDS);
+            System.out.println("You have 2 minutes to provide an answer: ");
+            if (roomThreeChoiceTwoAnswer>number2 && roomThreeChoiceTwoAnswer<number) {
+                System.out.println("Congratulations" + username + ", you made it out of the escape room!");
+                System.exit(0);
+            }
+        } catch (ExecutionException | InterruptedException ex) {
+            ex.printStackTrace();
+        } catch (TimeoutException e) {
+            System.out.println("It seems that your time has ran out, goodbye.");}
     }
-    public static String randomItem(){
-        int index = random.nextInt(items.length);
-        return items[index];
+
+    public static void clearScreen(){
+        System.out.println("\033[H\033[2J");
+        System.out.flush();
     }
+
+
+
+
 }
